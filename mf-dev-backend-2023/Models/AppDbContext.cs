@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Security.Policy;
 
 namespace mf_dev_backend_2023.Models
 {
@@ -8,6 +9,9 @@ namespace mf_dev_backend_2023.Models
 
         public DbSet<Veiculo> Veiculos  { get; set; }
 
+        public DbSet<Consumo> Consumos { get; set; }
+
+        public DbSet<Usuario> Usuarios { get; set; }
 
 
     }

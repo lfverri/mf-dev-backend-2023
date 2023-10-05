@@ -1,10 +1,11 @@
 ﻿using mf_dev_backend_2023.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace mf_dev_backend_2023.Controllers
 {
-
+    //[Authorize]
     public class VeiculosController : Controller
     {
         private readonly AppDbContext _context;
@@ -116,6 +117,26 @@ namespace mf_dev_backend_2023.Controllers
 
         }
 
+        public async Task<IActionResult> Relatorio (int? id) //retorna os dados do veiculo
+        {
+            if(id == null)
+                return NotFound();
+
+            var veiculo = await _context.Veiculos.FindAsync(id);
+            if (veiculo == null)
+                return NotFound();
+
+            var consumos = await _context.Consumos //retorna os dados de consumo do veiculo 
+                .Where(c => c.VeiculoId == id)
+                .OrderByDescending(c => c.Data)
+                .ToListAsync();
+
+            decimal total = consumos.Sum(c => c.Valor); //retorna o valor referente ao consumo
+
+            ViewBag.Veiculo = veiculo;
+            ViewBag.Total = total;
+            return View(consumos);
+        }
     }
 }
 
